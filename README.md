@@ -46,3 +46,14 @@ composer install
 cp .env.example .env
 php artisan key:generate
 ```
+
+### 2) Configure database
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=ticket_management_db
+DB_USERNAME=root
+DB_PASSWORD=
+```
