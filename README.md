@@ -1,8 +1,8 @@
 # Ticket Management API (Laravel 12)
 
-Backend REST API untuk sistem **ticket management/helpdesk**: customer buat ticket, agent handle ticket assigned, admin manage categories & assign ticket.
+Backend REST API for **ticket management/helpdesk system**: customer create ticket, agent handle ticket assigned, admin manage categories & assign ticket.
 
-Project ini dibuat untuk portfolio (junior-friendly tapi “real-world”): **Sanctum token auth**, **role-based authorization (Policies)**, **filters + pagination**, **seed demo data**, dan **feature tests**.
+This project was made for a portfolio: **Sanctum token auth**, **role-based authorization (Policies)**, **filters + pagination**, **seed demo data**, dan **feature tests**.
 
 ---
 
