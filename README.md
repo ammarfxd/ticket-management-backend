@@ -180,7 +180,7 @@ Supported query params:
 
 ### Sample cURL
 
-1. Login (customer)
+### 1. Login (customer)
 
 ```bash
 curl -X POST "http://127.0.0.1:8000/api/auth/login" \
@@ -189,7 +189,7 @@ curl -X POST "http://127.0.0.1:8000/api/auth/login" \
   -d "password=password"
 ```
 
-2. Get categories
+### 2. Get categories
 
 ```bash
 curl "http://127.0.0.1:8000/api/categories" \
@@ -197,7 +197,7 @@ curl "http://127.0.0.1:8000/api/categories" \
   -H "Authorization: Bearer <TOKEN>"
 ```
 
-3. Create a ticket (customer)
+### 3. Create a ticket (customer)
 
 ```bash
 curl -X POST "http://127.0.0.1:8000/api/tickets" \
@@ -209,7 +209,7 @@ curl -X POST "http://127.0.0.1:8000/api/tickets" \
   -d "priority=medium"
 ```
 
-4. List tickets (role-based)
+### 4. List tickets (role-based)
 
 ```bash
 curl "http://127.0.0.1:8000/api/tickets?status=open&per_page=10" \
@@ -217,7 +217,7 @@ curl "http://127.0.0.1:8000/api/tickets?status=open&per_page=10" \
   -H "Authorization: Bearer <TOKEN>"
 ```
 
-5. Reply to a ticket
+### 5. Reply to a ticket
 
 ```bash
 curl -X POST "http://127.0.0.1:8000/api/tickets/1/comments" \
@@ -226,7 +226,7 @@ curl -X POST "http://127.0.0.1:8000/api/tickets/1/comments" \
   -d "body=Any update on this issue?"
 ```
 
-6. Add an internal note (agent/admin only)
+### 6. Add an internal note (agent/admin only)
 
 ```bash
 curl -X POST "http://127.0.0.1:8000/api/tickets/1/comments" \
@@ -236,7 +236,7 @@ curl -X POST "http://127.0.0.1:8000/api/tickets/1/comments" \
   -d "is_internal=true"
 ```
 
-7. Assign ticket to agent (admin only)
+### 7. Assign ticket to agent (admin only)
 
 ```bash
 curl -X PATCH "http://127.0.0.1:8000/api/tickets/1/assign" \
@@ -255,13 +255,15 @@ curl -X PATCH "http://127.0.0.1:8000/api/tickets/1/assign" \
 
 - Admin: can access and manage all tickets; can assign tickets; can manage categories.
 
+---
+
 ## Running Tests
 
 ```bash
 php artisan test
 ```
 
-Policy feature tests include:
+### Policy feature tests include:
 
 - guest gets 401
 
