@@ -97,7 +97,7 @@ Accept: application/json
 
 ### Login
 
-#### POST /api/auth/login
+POST /api/auth/login
 
 Example response:
 
