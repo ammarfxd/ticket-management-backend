@@ -59,3 +59,27 @@ DB_DATABASE=ticket_management_db
 DB_USERNAME=root
 DB_PASSWORD=
 ```
+
+### 3) Run migrations + seed demo data
+
+```bash
+php artisan migrate:fresh --seed
+```
+
+### 4) Start the server
+
+```bash
+php artisan serve
+```
+
+Base URL: http://127.0.0.1:8000
+
+### Demo Accounts (Seeder)
+
+Password for all demo accounts: password
+
+Admin: admin@example.com
+
+Agent: agent@example.com
+
+Customer: customer@example.com
