@@ -154,3 +154,123 @@ Example response:
 | POST   | `/api/categories`      | admin | Create category |
 | PATCH  | `/api/categories/{id}` | admin | Update category |
 | DELETE | `/api/categories/{id}` | admin | Delete category |
+
+---
+
+### Filtering & Pagination
+
+Ticket list filters
+
+Example:
+GET /api/tickets?status=open&priority=high&category_id=1&search=refund&page=1&per_page=10
+
+Supported query params:
+
+- status: open|pending|resolved|closed
+
+- priority: low|medium|high|urgent
+
+- category_id: integer
+
+- search: searches subject and description
+
+- page, per_page (max per_page = 50)
+
+---
+
+### Sample cURL
+
+1. Login (customer)
+
+```bash
+curl -X POST "http://127.0.0.1:8000/api/auth/login" \
+  -H "Accept: application/json" \
+  -d "email=customer@example.com" \
+  -d "password=password"
+```
+
+2. Get categories
+
+```bash
+curl "http://127.0.0.1:8000/api/categories" \
+  -H "Accept: application/json" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+3. Create a ticket (customer)
+
+```bash
+curl -X POST "http://127.0.0.1:8000/api/tickets" \
+  -H "Accept: application/json" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -d "category_id=1" \
+  -d "subject=Can't login" \
+  -d "description=I forgot my password" \
+  -d "priority=medium"
+```
+
+4. List tickets (role-based)
+
+```bash
+curl "http://127.0.0.1:8000/api/tickets?status=open&per_page=10" \
+  -H "Accept: application/json" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+5. Reply to a ticket
+
+```bash
+curl -X POST "http://127.0.0.1:8000/api/tickets/1/comments" \
+  -H "Accept: application/json" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -d "body=Any update on this issue?"
+```
+
+6. Add an internal note (agent/admin only)
+
+```bash
+curl -X POST "http://127.0.0.1:8000/api/tickets/1/comments" \
+  -H "Accept: application/json" \
+  -H "Authorization: Bearer <AGENT_OR_ADMIN_TOKEN>" \
+  -d "body=Internal note: checking logs" \
+  -d "is_internal=true"
+```
+
+7. Assign ticket to agent (admin only)
+
+```bash
+curl -X PATCH "http://127.0.0.1:8000/api/tickets/1/assign" \
+  -H "Accept: application/json" \
+  -H "Authorization: Bearer <ADMIN_TOKEN>" \
+  -d "assigned_to=2"
+```
+
+---
+
+## Authorization Rules (Summary)
+
+- Customer: can access only their own tickets (view + comment); can create tickets.
+
+- Agent: can access only assigned tickets (view + update + comment).
+
+- Admin: can access and manage all tickets; can assign tickets; can manage categories.
+
+## Running Tests
+
+```bash
+php artisan test
+```
+
+Policy feature tests include:
+
+- guest gets 401
+
+- customer can only view own tickets
+
+- agent can only view assigned tickets
+
+- agent can update only assigned tickets
+
+- admin can view/assign any ticket
+
+- categories: admin-only create/update/delete
