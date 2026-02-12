@@ -1,28 +1,28 @@
 # Ticket Management API (Laravel 12)
 
-Backend REST API for **ticket management/helpdesk system**: customer create ticket, agent handle ticket assigned, admin manage categories & assign ticket.
+Backend REST API for a **ticket management/helpdesk system**: customers create tickets, agents handle assigned tickets, and admins manage categories & assign tickets.
 
-This project was made for a portfolio: **Sanctum token auth**, **role-based authorization (Policies)**, **filters + pagination**, **seed demo data**, dan **feature tests**.
+Built for portfolio: **Sanctum token auth**, **role-based authorization (Policies)**, **filters + pagination**, **seed demo data**, and **feature tests**.
 
 ---
 
 ## Features
 
-- Auth (Register / Login / Logout) — **Laravel Sanctum**
+- Authentication (Register / Login / Logout) — **Laravel Sanctum**
 - Roles: `admin`, `agent`, `customer`
-- Tickets:
+- Tickets
     - Create ticket (customer)
     - List tickets (role-based scope)
     - View ticket (policy)
-    - Update status/priority (agent assigned / admin)
+    - Update status/priority (assigned agent / admin)
     - Assign ticket to agent (admin)
-- Ticket comments:
-    - Reply thread (customer/agent/admin ikut policy)
-    - Internal note (agent/admin sahaja)
-- Categories:
-    - View categories (any authenticated)
+- Ticket comments
+    - Reply thread (policy enforced)
+    - Internal notes (agent/admin only)
+- Categories
+    - View categories (any authenticated user)
     - Admin-only CRUD (Policy)
-- API Resources (consistent JSON)
+- API Resources (consistent JSON responses)
 - Seed demo data + Feature tests
 
 ---
@@ -45,13 +45,7 @@ This project was made for a portfolio: **Sanctum token auth**, **role-based auth
 composer install
 cp .env.example .env
 php artisan key:generate
-
-php artisan migrate:fresh --seed
-
-php artisan serve
-
 2) Configure database
-
 Edit .env:
 
 DB_CONNECTION=mysql
@@ -60,20 +54,13 @@ DB_PORT=3306
 DB_DATABASE=ticket_management_db
 DB_USERNAME=root
 DB_PASSWORD=
-
 3) Run migrations + seed demo data
 php artisan migrate:fresh --seed
-
 4) Start the server
 php artisan serve
-
-
-Base URL:
-
-http://127.0.0.1:8000
+Base URL: http://127.0.0.1:8000
 
 Demo Accounts (Seeder)
-
 Password for all demo accounts: password
 
 Admin: admin@example.com
@@ -83,14 +70,11 @@ Agent: agent@example.com
 Customer: customer@example.com
 
 Authentication
-
 All protected endpoints require:
 
 Authorization: Bearer <TOKEN>
 Accept: application/json
-
 Login
-
 POST /api/auth/login
 
 Example response:
@@ -106,9 +90,7 @@ Example response:
   "token": "1|xxxxxxxxxxxxxxxxxxxx",
   "token_type": "Bearer"
 }
-
 API Endpoints
-
 Base URL: http://127.0.0.1:8000
 
 Auth
@@ -134,9 +116,7 @@ GET	/api/categories	auth	List categories
 POST	/api/categories	admin	Create category
 PATCH	/api/categories/{id}	admin	Update category
 DELETE	/api/categories/{id}	admin	Delete category
-Filtering & Pagination
-Ticket list filters
-
+Filtering & Pagination (Tickets)
 Example:
 GET /api/tickets?status=open&priority=high&category_id=1&search=refund&page=1&per_page=10
 
@@ -158,15 +138,12 @@ curl -X POST "http://127.0.0.1:8000/api/auth/login" \
   -H "Accept: application/json" \
   -d "email=customer@example.com" \
   -d "password=password"
-
-
 Copy the token from the response.
 
 2) Get categories
 curl "http://127.0.0.1:8000/api/categories" \
   -H "Accept: application/json" \
   -H "Authorization: Bearer <TOKEN>"
-
 3) Create a ticket (customer)
 curl -X POST "http://127.0.0.1:8000/api/tickets" \
   -H "Accept: application/json" \
@@ -175,33 +152,27 @@ curl -X POST "http://127.0.0.1:8000/api/tickets" \
   -d "subject=Can't login" \
   -d "description=I forgot my password" \
   -d "priority=medium"
-
 4) List tickets (role-based)
 curl "http://127.0.0.1:8000/api/tickets?status=open&per_page=10" \
   -H "Accept: application/json" \
   -H "Authorization: Bearer <TOKEN>"
-
 5) Reply to a ticket
 curl -X POST "http://127.0.0.1:8000/api/tickets/1/comments" \
   -H "Accept: application/json" \
   -H "Authorization: Bearer <TOKEN>" \
   -d "body=Any update on this issue?"
-
 6) Add an internal note (agent/admin only)
 curl -X POST "http://127.0.0.1:8000/api/tickets/1/comments" \
   -H "Accept: application/json" \
   -H "Authorization: Bearer <AGENT_OR_ADMIN_TOKEN>" \
   -d "body=Internal note: checking logs" \
   -d "is_internal=true"
-
 7) Assign ticket to agent (admin only)
 curl -X PATCH "http://127.0.0.1:8000/api/tickets/1/assign" \
   -H "Accept: application/json" \
   -H "Authorization: Bearer <ADMIN_TOKEN>" \
   -d "assigned_to=2"
-
 Authorization Rules (Summary)
-
 Customer: can access only their own tickets (view + comment); can create tickets.
 
 Agent: can access only assigned tickets (view + update + comment).
@@ -209,4 +180,5 @@ Agent: can access only assigned tickets (view + update + comment).
 Admin: can access and manage all tickets; can assign tickets; can manage categories.
 
 Running Tests
+php artisan test
 ```
