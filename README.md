@@ -37,12 +37,176 @@ This project was made for a portfolio: **Sanctum token auth**, **role-based auth
 
 ---
 
-## Quick Start (Local)
+## Project Setup (Local)
 
-### 1) Install
+### 1) Install dependencies
 
 ```bash
 composer install
 cp .env.example .env
 php artisan key:generate
+
+php artisan migrate:fresh --seed
+
+php artisan serve
+
+2) Configure database
+
+Edit .env:
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=ticket_management_db
+DB_USERNAME=root
+DB_PASSWORD=
+
+3) Run migrations + seed demo data
+php artisan migrate:fresh --seed
+
+4) Start the server
+php artisan serve
+
+
+Base URL:
+
+http://127.0.0.1:8000
+
+Demo Accounts (Seeder)
+
+Password for all demo accounts: password
+
+Admin: admin@example.com
+
+Agent: agent@example.com
+
+Customer: customer@example.com
+
+Authentication
+
+All protected endpoints require:
+
+Authorization: Bearer <TOKEN>
+Accept: application/json
+
+Login
+
+POST /api/auth/login
+
+Example response:
+
+{
+  "message": "Logged in successfully.",
+  "user": {
+    "id": 1,
+    "name": "Admin Demo",
+    "email": "admin@example.com",
+    "role": "admin"
+  },
+  "token": "1|xxxxxxxxxxxxxxxxxxxx",
+  "token_type": "Bearer"
+}
+
+API Endpoints
+
+Base URL: http://127.0.0.1:8000
+
+Auth
+Method	Endpoint	Description
+POST	/api/auth/register	Register a new user (default role: customer)
+POST	/api/auth/login	Login and get API token
+POST	/api/auth/logout	Logout (revoke current token)
+GET	/api/auth/me	Get current authenticated user
+Tickets
+Method	Endpoint	Role	Description
+GET	/api/tickets	auth	List tickets (customer: own, agent: assigned, admin: all)
+POST	/api/tickets	customer	Create a new ticket
+GET	/api/tickets/{id}	policy	View ticket (customer: own, agent: assigned, admin: all)
+PATCH	/api/tickets/{id}	agent/admin	Update ticket (status, priority)
+PATCH	/api/tickets/{id}/assign	admin	Assign ticket to agent (assigned_to)
+Ticket Comments
+Method	Endpoint	Role	Description
+GET	/api/tickets/{id}/comments	policy	List comments for a ticket
+POST	/api/tickets/{id}/comments	policy	Add comment/reply (is_internal=true agent/admin only)
+Categories
+Method	Endpoint	Role	Description
+GET	/api/categories	auth	List categories
+POST	/api/categories	admin	Create category
+PATCH	/api/categories/{id}	admin	Update category
+DELETE	/api/categories/{id}	admin	Delete category
+Filtering & Pagination
+Ticket list filters
+
+Example:
+GET /api/tickets?status=open&priority=high&category_id=1&search=refund&page=1&per_page=10
+
+Supported query params:
+
+status: open|pending|resolved|closed
+
+priority: low|medium|high|urgent
+
+category_id: integer
+
+search: searches subject and description
+
+page, per_page (max per_page = 50)
+
+Sample cURL
+1) Login (customer)
+curl -X POST "http://127.0.0.1:8000/api/auth/login" \
+  -H "Accept: application/json" \
+  -d "email=customer@example.com" \
+  -d "password=password"
+
+
+Copy the token from the response.
+
+2) Get categories
+curl "http://127.0.0.1:8000/api/categories" \
+  -H "Accept: application/json" \
+  -H "Authorization: Bearer <TOKEN>"
+
+3) Create a ticket (customer)
+curl -X POST "http://127.0.0.1:8000/api/tickets" \
+  -H "Accept: application/json" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -d "category_id=1" \
+  -d "subject=Can't login" \
+  -d "description=I forgot my password" \
+  -d "priority=medium"
+
+4) List tickets (role-based)
+curl "http://127.0.0.1:8000/api/tickets?status=open&per_page=10" \
+  -H "Accept: application/json" \
+  -H "Authorization: Bearer <TOKEN>"
+
+5) Reply to a ticket
+curl -X POST "http://127.0.0.1:8000/api/tickets/1/comments" \
+  -H "Accept: application/json" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -d "body=Any update on this issue?"
+
+6) Add an internal note (agent/admin only)
+curl -X POST "http://127.0.0.1:8000/api/tickets/1/comments" \
+  -H "Accept: application/json" \
+  -H "Authorization: Bearer <AGENT_OR_ADMIN_TOKEN>" \
+  -d "body=Internal note: checking logs" \
+  -d "is_internal=true"
+
+7) Assign ticket to agent (admin only)
+curl -X PATCH "http://127.0.0.1:8000/api/tickets/1/assign" \
+  -H "Accept: application/json" \
+  -H "Authorization: Bearer <ADMIN_TOKEN>" \
+  -d "assigned_to=2"
+
+Authorization Rules (Summary)
+
+Customer: can access only their own tickets (view + comment); can create tickets.
+
+Agent: can access only assigned tickets (view + update + comment).
+
+Admin: can access and manage all tickets; can assign tickets; can manage categories.
+
+Running Tests
 ```
