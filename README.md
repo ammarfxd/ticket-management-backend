@@ -49,6 +49,8 @@ php artisan key:generate
 
 ### 2) Configure database
 
+Edit .env:
+
 ```env
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
