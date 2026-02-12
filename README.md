@@ -161,9 +161,7 @@ Example response:
 
 ### Ticket list filters
 
-### Example:
-
-#### GET /api/tickets?status=open&priority=high&category_id=1&search=refund&page=1&per_page=10
+> Example: GET `/api/tickets?status=open&priority=high&category_id=1&search=refund&page=1&per_page=10`
 
 ### Supported query params:
 
