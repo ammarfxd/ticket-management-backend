@@ -74,12 +74,12 @@ php artisan serve
 
 Base URL: http://127.0.0.1:8000
 
-### Demo Accounts (Seeder)
+## Demo Accounts (Seeder)
 
-Password for all demo accounts: password
+- Password for all demo accounts: password
 
-Admin: admin@example.com
+- Admin: admin@example.com
 
-Agent: agent@example.com
+- Agent: agent@example.com
 
-Customer: customer@example.com
+- Customer: customer@example.com
